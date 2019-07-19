@@ -3,17 +3,54 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Webpack Showcase</title>
-    
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Tip Calculator</title>
 </head>
 
 <body>
     <div class="container">
         <header class="page-header">
-            <h1>Web Dev</h1>
-            <h2>Super Awesome</h2>
+            <h1>Tip Calculator</h1>
         </header>
+    </div>
+    <div class="container">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+            </div>
+            <input type="text"
+                   class="form-control">
+        </div>
+    </div>
 
+    <div class="container">
+        <ul class="list-group list-group-horizontal">
+            <button type="button"
+                    class="list-group-item list-group-item-action list-group-item-dark">10%</button>
+            <button type="button"
+                    class="list-group-item list-group-item-action list-group-item-dark">15%</button>
+            <button type="button"
+                    class="list-group-item list-group-item-action list-group-item-dark">20%</button>
+        </ul>
+        <message class="tipping-message"
+                 id="msgTip"></message>
+    </div>
+    <div class="container">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <message id="msgTotalBill"></message>
+            </li>
+            <li class="list-group-item">
+                <message id="msgTipPercentage"></message>
+            </li>
+            <li class="list-group-item">
+                <message id="msgTipAmount"></message>
+            </li>
+            <li class="list-group-item"><i>
+                    <message id="msgTotalPaid"></message>
+                </i></li>
+        </ul>
     </div>
 </body>
 
