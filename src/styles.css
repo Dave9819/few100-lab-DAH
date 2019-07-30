@@ -10,11 +10,14 @@ h1 {
 .list-group-horizontal .list-group-item{
     width:80px;
     text-align: center;
-    color:white;
 }
 
 .tipping-message{
     padding-top:10px
+}
+
+.error{
+    border:solid red;
 }
 
 

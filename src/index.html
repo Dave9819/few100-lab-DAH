@@ -20,35 +20,39 @@
                 <span class="input-group-text">$</span>
             </div>
             <input type="text"
-                   class="form-control">
+                   class="form-control"
+                   id="txtBillAmt" />
         </div>
     </div>
 
     <div class="container">
         <ul class="list-group list-group-horizontal">
             <button type="button"
+                    id="10Percent"
                     class="list-group-item list-group-item-action list-group-item-dark">10%</button>
             <button type="button"
+                    id="15Percent"
                     class="list-group-item list-group-item-action list-group-item-dark">15%</button>
             <button type="button"
+                    id="20Percent"
                     class="list-group-item list-group-item-action list-group-item-dark">20%</button>
         </ul>
-        <message class="tipping-message"
+        You are tipping <message class="tipping-message"
                  id="msgTip"></message>
     </div>
     <div class="container">
         <ul class="list-group">
             <li class="list-group-item">
-                <message id="msgTotalBill"></message>
+                Bill Amount: <message id="msgBillAmount"></message>
             </li>
             <li class="list-group-item">
-                <message id="msgTipPercentage"></message>
+                Tip Percentage: <message id="msgTipPercentage"></message>
             </li>
             <li class="list-group-item">
-                <message id="msgTipAmount"></message>
+                Amount of tip: <message id="msgTipAmount"></message>
             </li>
             <li class="list-group-item"><i>
-                    <message id="msgTotalPaid"></message>
+                    Total to be Paid: <message id="msgTotalPaid"></message>
                 </i></li>
         </ul>
     </div>

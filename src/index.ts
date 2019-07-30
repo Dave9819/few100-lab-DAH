@@ -1,7 +1,7 @@
 import './styles.css';
-import { add, PI } from './utils';
-console.log('Ready to Party');
 
-console.log(add(10, 18));
+import { ready } from './ready';
+import { runApp } from './app';
 
-console.log(PI);
+
+ready(runApp);
