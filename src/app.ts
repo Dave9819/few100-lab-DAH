@@ -1,32 +1,36 @@
 import { totalToBePaid, getTipPercent, totalTipAmount, getSelectionStart, isValidBillAmount } from "./utils";
 
 let tipPercentageString: string = '0';
-const billAmtValue = <HTMLInputElement>document.getElementById('txtBillAmt');
+const txtBillAmt = <HTMLInputElement>document.getElementById('txtBillAmt');
+const msgTip = document.getElementById('msgTip');
+const msgBillAmount = document.getElementById('msgBillAmount');
+const tipAmountButton = document.querySelectorAll('.list-group-item.list-group-item-action.list-group-item-dark');
+const msgTipPercentage = document.getElementById('msgTipPercentage');
+const msgTipAmount = document.getElementById('msgTipAmount');
+const msgTotalPaid = document.getElementById('msgTotalPaid');
 
 export function runApp() {
 
     setUp();
 
     function setUp() {
-        let txtBillAmt = document.getElementById('txtBillAmt');
+        const txtBillAmt = document.getElementById('txtBillAmt');
         txtBillAmt.addEventListener('keypress', isNumberKey);
         txtBillAmt.addEventListener('input', handleInput);
-
-        let tipAmountButton = document.querySelectorAll('.list-group-item');
 
         tipAmountButton.forEach((tipButton, index) => {
             tipButton.addEventListener('click', handleClick)
         })
+
+        msgTip.innerText = '0%';
     }
 }
 
 function handleClick(evt) {
-    let tipAmtBtnClickedOn = this as HTMLInputElement;
+    const tipAmtBtnClickedOn = this as HTMLInputElement;
     tipPercentageString = tipAmtBtnClickedOn.innerText;
     tipAmtBtnClickedOn.disabled = true;
     tipAmtBtnClickedOn.classList.add('disabled');
-
-    let tipAmountButton = document.querySelectorAll('.list-group-item.list-group-item-action.list-group-item-dark');
 
     tipAmountButton.forEach((tipButton, index) => {
         let tipBtn = <HTMLInputElement>tipButton;
@@ -40,8 +44,8 @@ function handleClick(evt) {
 }
 
 function handleInput(evt) {
-    let msgBillAmount = document.getElementById('msgBillAmount');
-    msgBillAmount.innerText = billAmtValue.value;
+
+    msgBillAmount.innerText = txtBillAmt.value;
 
     updateDisplay();
 }
@@ -49,20 +53,20 @@ function handleInput(evt) {
 function isNumberKey(evt) {
     evt = (evt) ? evt : window.event;
     let charCode = (evt.which) ? evt.which : evt.keyCode;
-    let len = billAmtValue.value.length;
+    let len = txtBillAmt.value.length;
 
     if (charCode > 31 && (charCode < 48 || charCode > 57) && !(charCode == 46 || charCode == 8))
         evt.preventDefault();
     else {
-        let decimalIndex = billAmtValue.value.indexOf('.');
+        let decimalIndex = txtBillAmt.value.indexOf('.');
 
         if (decimalIndex > -1 && charCode == 46) {
             evt.preventDefault();
         }
         if ((decimalIndex > 0)) {
             let charAfterdot = (len + 1) - decimalIndex;
-            let cursorPos = getSelectionStart(billAmtValue);
-            console.log(cursorPos);
+            let cursorPos = getSelectionStart(txtBillAmt);
+
             if ((charAfterdot > 3) && (charCode >= 48 && charCode <= 57) && (cursorPos > decimalIndex)) {
                 evt.preventDefault();
             }
@@ -73,23 +77,16 @@ function isNumberKey(evt) {
 }
 
 function updateDisplay() {
-    let txtBillAmt = <HTMLInputElement>document.getElementById('txtBillAmt');
     let billAmtValue = parseFloat(txtBillAmt.value);
 
     let tipPrct = getTipPercent(tipPercentageString);
 
-    let msgBillAmount = document.getElementById('msgBillAmount');
-    let msgTipPercentage = document.getElementById('msgTipPercentage');
-
-    let msgTipAmount = document.getElementById('msgTipAmount');
-    let msgTotalPaid = document.getElementById('msgTotalPaid');
-    let msgTip = document.getElementById('msgTip');
+    msgTipPercentage.innerText = tipPercentageString;
+    msgTip.innerText = tipPercentageString;
 
     if (isValidBillAmount(billAmtValue)) {
 
         msgBillAmount.innerText = '$' + billAmtValue.toFixed(2);
-        msgTipPercentage.innerText = tipPercentageString;
-        msgTip.innerText = tipPercentageString;
 
         let totalTip = totalTipAmount(tipPrct, billAmtValue);
         msgTipAmount.innerText = '$' + totalTip.toFixed(2);
