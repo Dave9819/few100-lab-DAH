@@ -1,16 +1,15 @@
-import { totalToBePaid, getTipPercent, totalTipAmount } from "./utils";
+import { totalToBePaid, getTipPercent, totalTipAmount, getSelectionStart, isValidBillAmount } from "./utils";
 
-//let msgBillAmount: HTMLElement;
-//let txtBillAmt: HTMLElement;
 let tipPercentageString: string = '0';
+const billAmtValue = <HTMLInputElement>document.getElementById('txtBillAmt');
 
 export function runApp() {
 
-    console.log('making your request');
     setUp();
 
     function setUp() {
         let txtBillAmt = document.getElementById('txtBillAmt');
+        txtBillAmt.addEventListener('keypress', isNumberKey);
         txtBillAmt.addEventListener('input', handleInput);
 
         let tipAmountButton = document.querySelectorAll('.list-group-item');
@@ -18,7 +17,6 @@ export function runApp() {
         tipAmountButton.forEach((tipButton, index) => {
             tipButton.addEventListener('click', handleClick)
         })
-
     }
 }
 
@@ -42,19 +40,36 @@ function handleClick(evt) {
 }
 
 function handleInput(evt) {
-    let billAmtValue = <HTMLInputElement>document.getElementById('txtBillAmt');
     let msgBillAmount = document.getElementById('msgBillAmount');
     msgBillAmount.innerText = billAmtValue.value;
+
     updateDisplay();
 }
 
-function isValidBillAmount(billAmtValue: number) {
-    if (billAmtValue < 0) {
-        return false;
-    }
+function isNumberKey(evt) {
+    evt = (evt) ? evt : window.event;
+    let charCode = (evt.which) ? evt.which : evt.keyCode;
+    let len = billAmtValue.value.length;
+
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && !(charCode == 46 || charCode == 8))
+        evt.preventDefault();
     else {
-        return true;
+        let decimalIndex = billAmtValue.value.indexOf('.');
+
+        if (decimalIndex > -1 && charCode == 46) {
+            evt.preventDefault();
+        }
+        if ((decimalIndex > 0)) {
+            let charAfterdot = (len + 1) - decimalIndex;
+            let cursorPos = getSelectionStart(billAmtValue);
+            console.log(cursorPos);
+            if ((charAfterdot > 3) && (charCode >= 48 && charCode <= 57) && (cursorPos > decimalIndex)) {
+                evt.preventDefault();
+            }
+        }
+
     }
+    return true;
 }
 
 function updateDisplay() {
@@ -71,7 +86,6 @@ function updateDisplay() {
     let msgTip = document.getElementById('msgTip');
 
     if (isValidBillAmount(billAmtValue)) {
-        txtBillAmt.classList.remove('error');
 
         msgBillAmount.innerText = '$' + billAmtValue.toFixed(2);
         msgTipPercentage.innerText = tipPercentageString;
@@ -82,10 +96,8 @@ function updateDisplay() {
 
         let grandTotal = totalToBePaid(tipPrct, billAmtValue);
         msgTotalPaid.innerText = '$' + grandTotal.toFixed(2);
-
     }
     else {
-        txtBillAmt.classList.add('error');
         msgBillAmount.innerText = '';
         msgTipAmount.innerText = '';
         msgTotalPaid.innerText = '';

@@ -31,3 +31,16 @@ export function totalTipAmount(tipPct: number, totBillAmt: number) {
 export function totalToBePaid(tipPct: number, totBillAmt: number) {
     return totalTipAmount(tipPct, totBillAmt) + totBillAmt;
 }
+
+export function isValidBillAmount(billAmtValue: number) {
+    if ((billAmtValue < 0) || (isNaN(billAmtValue))) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+export function getSelectionStart(element) {
+    return element.selectionStart
+}
