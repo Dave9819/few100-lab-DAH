@@ -86,13 +86,18 @@ function updateDisplay() {
 
     if (isValidBillAmount(billAmtValue)) {
 
-        msgBillAmount.innerText = '$' + billAmtValue.toFixed(2);
+        const formatter = new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+        msgBillAmount.innerText = '$' + formatter.format(billAmtValue);
 
         let totalTip = totalTipAmount(tipPrct, billAmtValue);
-        msgTipAmount.innerText = '$' + totalTip.toFixed(2);
+        msgTipAmount.innerText = '$' + formatter.format(totalTip);
 
         let grandTotal = totalToBePaid(tipPrct, billAmtValue);
-        msgTotalPaid.innerText = '$' + grandTotal.toFixed(2);
+        msgTotalPaid.innerText = '$' + formatter.format(grandTotal);
     }
     else {
         msgBillAmount.innerText = '';

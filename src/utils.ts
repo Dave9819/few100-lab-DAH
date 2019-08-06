@@ -1,13 +1,4 @@
 
-export function add(a, b) {
-    return a + b;
-}
-
-
-export function formatTotBillAmt() {
-
-}
-
 export function getTipPercent(tipBtnText: string) {
     let tipPct = 0;
     switch (tipBtnText) {
