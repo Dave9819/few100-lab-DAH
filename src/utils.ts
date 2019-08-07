@@ -1,37 +1,48 @@
 
-export function getTipPercent(tipBtnText: string) {
-    let tipPct = 0;
-    switch (tipBtnText) {
-        case '10%':
-            tipPct = 10;
-            break;
-        case '15%':
-            tipPct = 15;
-            break;
-        case '20%':
-            tipPct = 20;
-            break;
-    }
-    return tipPct;
+export interface IBillData {
+    billBeforeTip: number,
+    tipPercentageTxt: string,
+    tipPercentage: number,
+    tipAmount: number,
+    totalBill: number
 }
 
-export function totalTipAmount(tipPct: number, totBillAmt: number) {
-    return (tipPct / 100) * totBillAmt;
-}
-
-export function totalToBePaid(tipPct: number, totBillAmt: number) {
-    return totalTipAmount(tipPct, totBillAmt) + totBillAmt;
-}
-
-export function isValidBillAmount(billAmtValue: number) {
-    if ((billAmtValue < 0) || (isNaN(billAmtValue))) {
-        return false;
-    }
-    else {
-        return true;
-    }
-}
+export const formatter = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+});
 
 export function getSelectionStart(element) {
     return element.selectionStart
+}
+
+export function updateBillData(billAmount: number, tipPercentage: number) {
+    let billNoTip = 0;
+    let tipPrctTxt = '';
+    let tipPrct = 0;
+    let tipAmt = 0;
+    let totBill = 0;
+
+    if (!isNaN(billAmount)) {
+        billNoTip = billAmount;
+    }
+    else {
+        billNoTip = 0;
+    }
+
+    if (!isNaN(tipPercentage)) {
+        tipPrctTxt = tipPercentage.toString() + '%';
+        tipPrct = (tipPercentage / 100);
+    }
+    else {
+        tipPrctTxt = '0%';
+        tipPrct = 0;
+    }
+
+    tipAmt = tipPrct * billNoTip;
+
+    totBill = tipAmt + billNoTip;
+
+    let newBillData = { billBeforeTip: billNoTip, tipPercentageTxt: tipPrctTxt, tipPercentage: tipPrct, tipAmount: tipAmt, totalBill: totBill };
+    return newBillData;
 }

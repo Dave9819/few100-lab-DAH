@@ -1,6 +1,6 @@
-import { totalToBePaid, getTipPercent, totalTipAmount, getSelectionStart, isValidBillAmount } from "./utils";
+import { getSelectionStart, formatter, updateBillData, IBillData } from "./utils";
 
-let tipPercentageString: string = '0';
+let tipPercentage: number = 0;
 const txtBillAmt = <HTMLInputElement>document.getElementById('txtBillAmt');
 const msgTip = document.getElementById('msgTip');
 const msgBillAmount = document.getElementById('msgBillAmount');
@@ -14,7 +14,6 @@ export function runApp() {
     setUp();
 
     function setUp() {
-        const txtBillAmt = document.getElementById('txtBillAmt');
         txtBillAmt.addEventListener('keypress', isNumberKey);
         txtBillAmt.addEventListener('input', handleInput);
 
@@ -22,32 +21,50 @@ export function runApp() {
             tipButton.addEventListener('click', handleClick)
         })
 
-        msgTip.innerText = '0%';
+        if (localStorage.length > 0) {
+            let tipBtnSelectedId = localStorage.getItem('tipPercentageButtonClickedOnId');
+            tipPercentage = parseFloat(tipBtnSelectedId);
+            const tipAmtBtnClickedOn = <HTMLInputElement>document.getElementById(tipBtnSelectedId);
+            tipAmtBtnClickedOn.disabled = true;
+            tipAmtBtnClickedOn.classList.add('disabled');
+        }
+
+        let billAmt = parseFloat(txtBillAmt.value);
+        let billData = updateBillData(billAmt, tipPercentage);
+        updateDisplay(billData);
     }
 }
 
 function handleClick(evt) {
     const tipAmtBtnClickedOn = this as HTMLInputElement;
-    tipPercentageString = tipAmtBtnClickedOn.innerText;
+
+    let buttonClickedOnId = tipAmtBtnClickedOn.id;
+
     tipAmtBtnClickedOn.disabled = true;
     tipAmtBtnClickedOn.classList.add('disabled');
 
+    tipPercentage = parseFloat(buttonClickedOnId);
+    localStorage.setItem('tipPercentageButtonClickedOnId', buttonClickedOnId);
+
     tipAmountButton.forEach((tipButton, index) => {
         let tipBtn = <HTMLInputElement>tipButton;
-        if (tipAmtBtnClickedOn.id != tipButton.id) {
+        if (buttonClickedOnId != tipButton.id) {
             tipBtn.disabled = false;
             tipBtn.classList.remove('disabled');
         }
     })
 
-    updateDisplay();
+    let billAmt = parseFloat(txtBillAmt.value);
+    let billData = updateBillData(billAmt, tipPercentage);
+    updateDisplay(billData);
 }
 
 function handleInput(evt) {
 
     msgBillAmount.innerText = txtBillAmt.value;
-
-    updateDisplay();
+    let billAmt = parseFloat(txtBillAmt.value);
+    let billData = updateBillData(billAmt, tipPercentage);
+    updateDisplay(billData);
 }
 
 function isNumberKey(evt) {
@@ -76,34 +93,11 @@ function isNumberKey(evt) {
     return true;
 }
 
-function updateDisplay() {
-    let billAmtValue = parseFloat(txtBillAmt.value);
-
-    let tipPrct = getTipPercent(tipPercentageString);
-
-    msgTipPercentage.innerText = tipPercentageString;
-    msgTip.innerText = tipPercentageString;
-
-    if (isValidBillAmount(billAmtValue)) {
-
-        const formatter = new Intl.NumberFormat('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-
-        msgBillAmount.innerText = '$' + formatter.format(billAmtValue);
-
-        let totalTip = totalTipAmount(tipPrct, billAmtValue);
-        msgTipAmount.innerText = '$' + formatter.format(totalTip);
-
-        let grandTotal = totalToBePaid(tipPrct, billAmtValue);
-        msgTotalPaid.innerText = '$' + formatter.format(grandTotal);
-    }
-    else {
-        msgBillAmount.innerText = '';
-        msgTipAmount.innerText = '';
-        msgTotalPaid.innerText = '';
-    }
-
+function updateDisplay(billData: IBillData) {
+    msgTipPercentage.innerText = billData.tipPercentageTxt;
+    msgTip.innerText = billData.tipPercentageTxt;
+    msgBillAmount.innerText = '$' + formatter.format(billData.billBeforeTip);
+    msgTipAmount.innerText = '$' + formatter.format(billData.tipAmount);
+    msgTotalPaid.innerText = '$' + formatter.format(billData.totalBill);
 }
 
