@@ -1,4 +1,4 @@
-import { getSelectionStart, formatter, updateBillData, IBillData } from "./utils";
+import { getSelectionStart, getTipPercentage, formatter, updateBillData, IBillData } from "./utils";
 
 let tipPercentage: number = 0;
 const txtBillAmt = <HTMLInputElement>document.getElementById('txtBillAmt');
@@ -38,17 +38,16 @@ export function runApp() {
 function handleClick(evt) {
     const tipAmtBtnClickedOn = this as HTMLInputElement;
 
-    let buttonClickedOnId = tipAmtBtnClickedOn.id;
-
     tipAmtBtnClickedOn.disabled = true;
     tipAmtBtnClickedOn.classList.add('disabled');
 
-    tipPercentage = parseFloat(buttonClickedOnId);
-    localStorage.setItem('tipPercentageButtonClickedOnId', buttonClickedOnId);
+    tipPercentage = getTipPercentage(tipAmtBtnClickedOn.id);
+
+    localStorage.setItem('tipPercentageButtonClickedOnId', tipAmtBtnClickedOn.id);
 
     tipAmountButton.forEach((tipButton, index) => {
         let tipBtn = <HTMLInputElement>tipButton;
-        if (buttonClickedOnId != tipButton.id) {
+        if (tipAmtBtnClickedOn.id != tipButton.id) {
             tipBtn.disabled = false;
             tipBtn.classList.remove('disabled');
         }
